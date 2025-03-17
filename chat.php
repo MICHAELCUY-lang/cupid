@@ -446,10 +446,10 @@ $update_seen_stmt->execute();
         const chatMessages = document.getElementById('chat-messages');
         chatMessages.scrollTop = chatMessages.scrollHeight;
         
-        // Auto refresh chat (optional)
-        setInterval(function() {
-            location.reload();
-        }, 30000); // Refresh every 30 seconds
+        // jangan di nyalain nanti pesannya refresh sendiri terus duplikat terus
+            // setInterval(function() {
+            //     location.reload();
+            // }, 30000);
     </script>
 </body>
 </html>
