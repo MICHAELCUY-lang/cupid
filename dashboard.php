@@ -925,6 +925,11 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
                                 <i class="fas fa-heart"></i> Pasangan
                             </a>
                         </li>
+                        <li>
+                    <a href="?page=payments" class="<?php echo $page === 'payments' ? 'active' : ''; ?>">
+                        <i class="fas fa-credit-card"></i> Pembayaran
+                    </a>
+                </li>
                     </ul>
                 </div>
 
@@ -1297,8 +1302,116 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
                                 <?php endif; ?>
                             </div>
                         </div>
+                    <?php elseif ($page === 'payments'): ?>
+    <div class="dashboard-header">
+        <h2>Riwayat Pembayaran</h2>
+        <p>Lihat riwayat pembayaran dan transaksi Anda.</p>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            <h3>Pembayaran Saya</h3>
+        </div>
+        
+        <?php
+        // Get user's payment history
+        $payments_sql = "SELECT prp.*, u.name as target_user_name 
+                        FROM profile_reveal_payments prp
+                        JOIN users u ON prp.target_user_id = u.id
+                        WHERE prp.user_id = ?
+                        ORDER BY prp.created_at DESC";
+        $payments_stmt = $conn->prepare($payments_sql);
+        $payments_stmt->bind_param("i", $user_id);
+        $payments_stmt->execute();
+        $payments_result = $payments_stmt->get_result();
+        $payments = [];
+        while ($row = $payments_result->fetch_assoc()) {
+            $payments[] = $row;
+        }
+        ?>
+        
+        <?php if (empty($payments)): ?>
+            <div class="empty-state" style="text-align: center; padding: 40px 0;">
+                <i class="fas fa-receipt" style="font-size: 50px; color: #ccc; margin-bottom: 20px;"></i>
+                <h3>Belum Ada Pembayaran</h3>
+                <p>Anda belum melakukan pembayaran apapun.</p>
+            </div>
+        <?php else: ?>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                <thead>
+                    <tr>
+                        <th style="text-align: left; padding: 12px; border-bottom: 1px solid #eee;">Order ID</th>
+                        <th style="text-align: left; padding: 12px; border-bottom: 1px solid #eee;">Profil</th>
+                        <th style="text-align: left; padding: 12px; border-bottom: 1px solid #eee;">Jumlah</th>
+                        <th style="text-align: left; padding: 12px; border-bottom: 1px solid #eee;">Status</th>
+                        <th style="text-align: left; padding: 12px; border-bottom: 1px solid #eee;">Tanggal</th>
+                        <th style="text-align: left; padding: 12px; border-bottom: 1px solid #eee;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($payments as $payment): ?>
+                    <tr>
+                        <td style="padding: 12px; border-bottom: 1px solid #eee;"><?php echo htmlspecialchars($payment['order_id']); ?></td>
+                        <td style="padding: 12px; border-bottom: 1px solid #eee;"><?php echo htmlspecialchars($payment['target_user_name']); ?></td>
+                        <td style="padding: 12px; border-bottom: 1px solid #eee;">Rp <?php echo number_format($payment['amount'], 0, ',', '.'); ?></td>
+                        <td style="padding: 12px; border-bottom: 1px solid #eee;">
+                            <span style="
+                                display: inline-block;
+                                padding: 4px 8px;
+                                border-radius: 12px;
+                                font-size: 12px;
+                                <?php
+                                switch ($payment['status']) {
+                                    case 'completed':
+                                        echo 'background-color: #d4edda; color: #155724;';
+                                        break;
+                                    case 'pending':
+                                        echo 'background-color: #fff3cd; color: #856404;';
+                                        break;
+                                    case 'failed':
+                                        echo 'background-color: #f8d7da; color: #721c24;';
+                                        break;
+                                    case 'refunded':
+                                        echo 'background-color: #d1ecf1; color: #0c5460;';
+                                        break;
+                                }
+                                ?>
+                            ">
+                                <?php
+                                switch ($payment['status']) {
+                                    case 'completed':
+                                        echo 'Selesai';
+                                        break;
+                                    case 'pending':
+                                        echo 'Menunggu';
+                                        break;
+                                    case 'failed':
+                                        echo 'Gagal';
+                                        break;
+                                    case 'refunded':
+                                        echo 'Dikembalikan';
+                                        break;
+                                }
+                                ?>
+                            </span>
+                        </td>
+                        <td style="padding: 12px; border-bottom: 1px solid #eee;"><?php echo date('d M Y H:i', strtotime($payment['created_at'])); ?></td>
+                        <td style="padding: 12px; border-bottom: 1px solid #eee;">
+                            <?php if ($payment['status'] === 'completed'): ?>
+                                <a href="view_profile.php?id=<?php echo $payment['target_user_id']; ?>" class="btn btn-sm" style="padding: 5px 10px; font-size: 12px;">Lihat Profil</a>
+                            <?php elseif ($payment['status'] === 'pending'): ?>
+                                <a href="payment_process.php?order_id=<?php echo $payment['order_id']; ?>" class="btn btn-sm" style="padding: 5px 10px; font-size: 12px;">Bayar</a>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php endif; ?>
+    </div>
+<?php endif; ?>
+
                     
-                    <?php endif; ?>
                 </div>
             </div>
         </div>
