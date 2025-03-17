@@ -8,6 +8,12 @@ checkLoggedIn();
 // Inisialisasi variabel
 $email = '';
 $error = '';
+$success = '';
+
+// Check for success message from verification
+if (isset($_GET['success'])) {
+    $success = $_GET['success'];
+}
 
 // Proses form login
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -29,15 +35,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $user = $result->fetch_assoc();
             // Verifikasi password
             if (password_verify($password, $user['password'])) {
-                // Set session dan redirect ke dashboard
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['user_name'] = $user['name'];
-                $_SESSION['user_email'] = $user['email'];
-                
-                // Debug session
-                // echo "Session set: " . $_SESSION['user_id']; exit;
-                
-                redirect('dashboard.php');
+                // Periksa apakah email sudah diverifikasi
+                if (isset($user['email_verified']) && $user['email_verified'] != 1) {
+                    $error = 'Email Anda belum diverifikasi. Silakan cek email Anda untuk link verifikasi.';
+                } else {
+                    // Set session dan redirect ke dashboard
+                    $_SESSION['user_id'] = $user['id'];
+                    $_SESSION['user_name'] = $user['name'];
+                    $_SESSION['user_email'] = $user['email'];
+                    
+                    // Debug session
+                    // echo "Session set: " . $_SESSION['user_id']; exit;
+                    
+                    redirect('dashboard.php');
+                }
             } else {
                 $error = 'Password salah.';
             }
@@ -133,6 +144,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             text-align: center;
         }
         
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            text-align: center;
+        }
+        
         .form-group {
             margin-bottom: 20px;
         }
@@ -209,6 +230,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             color: #666;
             font-size: 14px;
         }
+        
+        .form-hint {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .resend-verification {
+            margin-top: 10px;
+            font-size: 13px;
+        }
+        
+        .resend-verification a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .resend-verification a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -227,13 +268,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php if (!empty($error)): ?>
             <div class="error-message">
                 <?php echo $error; ?>
+                <?php if (strpos($error, 'belum diverifikasi') !== false): ?>
+                <div class="resend-verification">
+                    <a href="resend_verification.php?email=<?php echo urlencode($email); ?>">Kirim ulang email verifikasi</a>
+                </div>
+                <?php endif; ?>
+            </div>
+            <?php endif; ?>
+            
+            <?php if (!empty($success)): ?>
+            <div class="success-message">
+                <?php echo $success; ?>
             </div>
             <?php endif; ?>
             
             <form method="post" action="login.php">
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($email); ?>" required>
+                    <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($email); ?>" placeholder="email@student.president.ac.id" required>
                 </div>
                 
                 <div class="form-group">
@@ -245,10 +297,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 <div class="extra-links">
                     <p>Belum punya akun? <a href="register.php">Daftar</a></p>
+                    <p style="margin-top: 10px;"><a href="forgot_password.php">Lupa password?</a></p>
                 </div>
             </form>
         </div>
     </div>
 </body>
 </html>
-

@@ -123,6 +123,10 @@ INSERT INTO menfess (sender_id, receiver_id, message, is_anonymous, is_revealed)
 (4, 3, 'Alice, desain postermu kemarin bagus banget. Aku suka gayamu.', 1, 0),
 (5, 1, 'John, saya selalu kagum dengan koding kamu. Bisa ajarin aku kapan-kapan?', 1, 0);
 
+ALTER TABLE users 
+ADD COLUMN email_verified TINYINT(1) NOT NULL DEFAULT 0,
+ADD COLUMN verification_token VARCHAR(64) NULL;
+
 -- Script untuk Login dan Register
 
 -- login.php

@@ -717,58 +717,58 @@
         </div>
     </section>
 
-    <!-- Login Modal -->
-    <div class="modal" id="login-modal">
-        <div class="modal-content">
-            <span class="close-btn" id="close-login">&times;</span>
-            <h2>Masuk ke Cupid</h2>
-            <form id="login-form">
-                <div class="form-group">
-                    <label for="login-email">Email</label>
-                    <input type="email" id="login-email" required>
-                </div>
-                <div class="form-group">
-                    <label for="login-password">Password</label>
-                    <input type="password" id="login-password" required>
-                </div>
-                <button type="submit" class="btn">Masuk</button>
-                <p style="text-align: center; margin-top: 20px;">
-                    Belum punya akun? <a href="#" id="switch-to-register">Daftar</a>
-                </p>
-            </form>
-        </div>
+   <!-- Login Modal -->
+<div class="modal" id="login-modal">
+    <div class="modal-content">
+        <span class="close-btn" id="close-login">&times;</span>
+        <h2>Masuk ke Cupid</h2>
+        <form id="login-form" action="login.php" method="post">
+            <div class="form-group">
+                <label for="login-email">Email</label>
+                <input type="email" id="login-email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="login-password">Password</label>
+                <input type="password" id="login-password" name="password" required>
+            </div>
+            <button type="submit" class="btn">Masuk</button>
+            <p style="text-align: center; margin-top: 20px;">
+                Belum punya akun? <a href="#" id="switch-to-register">Daftar</a>
+            </p>
+        </form>
     </div>
+</div>
 
-    <!-- Register Modal -->
-    <div class="modal" id="register-modal">
-        <div class="modal-content">
-            <span class="close-btn" id="close-register">&times;</span>
-            <h2>Daftar di Cupid</h2>
-            <form id="register-form">
-                <div class="form-group">
-                    <label for="register-name">Nama Lengkap</label>
-                    <input type="text" id="register-name" required>
-                </div>
-                <div class="form-group">
-                    <label for="register-email">Email</label>
-                    <input type="email" id="register-email" required>
-                </div>
-                <div class="form-group">
-                    <label for="register-password">Password</label>
-                    <input type="password" id="register-password" required>
-                </div>
-                <div class="form-group">
-                    <label for="register-confirm">Konfirmasi Password</label>
-                    <input type="password" id="register-confirm" required>
-                </div>
-                <button type="submit" class="btn">Daftar</button>
-                <p style="text-align: center; margin-top: 20px;">
-                    Sudah punya akun? <a href="#" id="switch-to-login">Masuk</a>
-                </p>
-            </form>
-        </div>
+<!-- Register Modal -->
+<div class="modal" id="register-modal">
+    <div class="modal-content">
+        <span class="close-btn" id="close-register">&times;</span>
+        <h2>Daftar di Cupid</h2>
+        <form id="register-form" action="register.php" method="post">
+            <div class="form-group">
+                <label for="register-name">Nama Lengkap</label>
+                <input type="text" id="register-name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="register-email">Email</label>
+                <input type="email" id="register-email" name="email" required placeholder="email@student.president.ac.id">
+                <small style="color: #666; display: block; margin-top: 5px;">Gunakan email dengan domain student.president.ac.id</small>
+            </div>
+            <div class="form-group">
+                <label for="register-password">Password</label>
+                <input type="password" id="register-password" name="password" required>
+            </div>
+            <div class="form-group">
+                <label for="register-confirm">Konfirmasi Password</label>
+                <input type="password" id="register-confirm" name="confirm_password" required>
+            </div>
+            <button type="submit" class="btn">Daftar</button>
+            <p style="text-align: center; margin-top: 20px;">
+                Sudah punya akun? <a href="#" id="switch-to-login">Masuk</a>
+            </p>
+        </form>
     </div>
-
+</div>
     <!-- Footer -->
     <footer>
         <div class="container">
