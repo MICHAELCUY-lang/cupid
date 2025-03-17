@@ -123,6 +123,30 @@ INSERT INTO menfess (sender_id, receiver_id, message, is_anonymous, is_revealed)
 (4, 3, 'Alice, desain postermu kemarin bagus banget. Aku suka gayamu.', 1, 0),
 (5, 1, 'John, saya selalu kagum dengan koding kamu. Bisa ajarin aku kapan-kapan?', 1, 0);
 
+
+CREATE TABLE profile_reveal_payments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id VARCHAR(100) NOT NULL UNIQUE,
+    user_id INT NOT NULL,
+    target_user_id INT NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    status ENUM('pending', 'completed', 'failed', 'refunded') NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    paid_at TIMESTAMP NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (target_user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE profile_view_permissions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    target_user_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (target_user_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE KEY (user_id, target_user_id)
+);
+
 ALTER TABLE users 
 ADD COLUMN email_verified TINYINT(1) NOT NULL DEFAULT 0,
 ADD COLUMN verification_token VARCHAR(64) NULL;
